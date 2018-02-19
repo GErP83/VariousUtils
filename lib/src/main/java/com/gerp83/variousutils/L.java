@@ -13,12 +13,23 @@ public class L {
 
 
     public static void l(Object... objects) {
+
+        if(objects == null ){
+            System.out.println("null");
+            return;
+        }
+
         for (Object object : objects) {
             printObject(object);
         }
     }
 
     private static void printObject(Object object) {
+
+        if(object == null ){
+            System.out.println("null");
+            return;
+        }
 
         Class clazz = object.getClass();
 
