@@ -5,7 +5,7 @@ A couple helpful utils for faster coding:
 - get R file identifiers
 - logging
 - navigating Activities faster
-- easy intent calls
+- easy intent calls and can add parameters easily
 - handling permissions
 - handling SharedPreferences
 - custom font handling
@@ -15,7 +15,7 @@ Android api 4.3+:
 
 Add to dependencies:
 ```
-compile 'com.github.gerp83:VariousUtils:1.02'
+compile 'com.github.gerp83:VariousUtils:1.03'
 ```
 
 ## Examples
