@@ -8,6 +8,8 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 
 import java.io.File;
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -21,6 +23,7 @@ public class Intents {
     private Activity activityFrom = null;
     private Context context = null;
     private Class clazzTo = null;
+    private HashMap<String, Object> dataMap = null;
 
     private int intentFlags = -1;
     private String action = null;
@@ -80,6 +83,20 @@ public class Intents {
     }
 
     /**
+     * data to send with Intent
+     *
+     * @param key key
+     * @param data Object
+     */
+    public Intents data(String key, Object data) {
+        if(dataMap == null) {
+            dataMap = new HashMap<>();
+        }
+        dataMap.put(key, data);
+        return this;
+    }
+
+    /**
      * set flags for Intent
      *
      * @param intentFlags flags
@@ -136,6 +153,11 @@ public class Intents {
 
         if(intentFlags != -1) {
             intent.addFlags(intentFlags);
+        }
+        if(dataMap != null) {
+            for (String key : dataMap.keySet()) {
+                intent.putExtra(key, (Serializable) dataMap.get(key));
+            }
         }
         if(action != null) {
             intent.setAction(action);
