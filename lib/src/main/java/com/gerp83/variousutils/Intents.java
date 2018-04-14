@@ -3,14 +3,11 @@ package com.gerp83.variousutils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 
 import java.io.File;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by gerp83
@@ -18,7 +15,7 @@ import java.util.List;
  */
 public class Intents {
 
-    private static final String NO_INTENT_ERROR = "No app can handle intent!";
+    private static final String NO_INTENT_ERROR = "Intent call error: ";
 
     private Activity activityFrom = null;
     private Context context = null;
@@ -212,19 +209,20 @@ public class Intents {
      * @param context  A context needed to open the activity to be launched
      * @param url String url to open/view.
      */
-    public static void viewURL(Context context, String url) throws IntentFailException{
+    public static void viewURL(Context context, String url) throws Throwable{
         if (context == null || url == null) {
             return;
-        }
-        if (!isIntentAvailable(context, Intent.ACTION_VIEW)) {
-            throw new IntentFailException(NO_INTENT_ERROR);
         }
         if(!url.startsWith("http://")) {
             url = "http://" + url;
         }
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }catch (Throwable e){
+            throw new Throwable(NO_INTENT_ERROR + e.toString());
+        }
     }
 
     /**
@@ -232,7 +230,7 @@ public class Intents {
      *
      * @param context A context needed for opening the application/activity.
      */
-    public static void openAppPlayStore(Context context) throws IntentFailException{
+    public static void openAppPlayStore(Context context) throws Throwable{
         if (context == null) {
             return;
         }
@@ -245,17 +243,18 @@ public class Intents {
      * @param context A context needed for opening the application/activity.
      * @param file The pdf file to open.
      */
-    public static void openPdf(Context context, File file) throws IntentFailException{
+    public static void openPdf(Context context, File file) throws Throwable{
         if (context == null || file == null) {
             return;
         }
-        if (!isIntentAvailable(context, Intent.ACTION_VIEW)) {
-            throw new IntentFailException(NO_INTENT_ERROR);
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setDataAndType(Uri.fromFile(file), "application/pdf");
+            context.startActivity(intent);
+        }catch (Throwable e){
+            throw new Throwable(NO_INTENT_ERROR + e.toString());
         }
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setDataAndType(Uri.fromFile(file), "application/pdf");
-        context.startActivity(intent);
     }
 
     /**
@@ -264,34 +263,36 @@ public class Intents {
      * @param context A context used to call the activity.
      * @param phone phone number to call
      */
-    public static void dialNumber(Context context, String phone) throws IntentFailException{
+    public static void dialNumber(Context context, String phone) throws Throwable{
         if (context == null || phone == null) {
             return;
-        }
-        if (!isIntentAvailable(context, Intent.ACTION_DIAL)) {
-            throw new IntentFailException(NO_INTENT_ERROR);
         }
         if(!phone.startsWith("tel:")) {
             phone = "tel:" + phone;
         }
-        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(phone));
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+        try {
+            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(phone));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }catch (Throwable e){
+            throw new Throwable(NO_INTENT_ERROR + e.toString());
+        }
     }
 
-    public static void shareUrl(Context context, String subject, String url) throws IntentFailException{
+    public static void shareUrl(Context context, String subject, String url) throws Throwable{
         if (context == null) {
             return;
         }
-        if (!isIntentAvailable(context, Intent.ACTION_SEND)) {
-            throw new IntentFailException(NO_INTENT_ERROR);
+        try {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+            intent.putExtra(Intent.EXTRA_TEXT, url);
+            context.startActivity(intent);
+        }catch (Throwable e){
+            throw new Throwable(NO_INTENT_ERROR + e.toString());
         }
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
-        intent.putExtra(Intent.EXTRA_TEXT, url);
-        context.startActivity(intent);
     }
 
     /**
@@ -301,12 +302,9 @@ public class Intents {
      * @param mailAddress  String representing destination email.
      * @param mailSubject  String representing the subject of the email.
      */
-    public static void composeMail(Context context, String mailAddress, String mailSubject, String mailText) throws IntentFailException {
+    public static void composeMail(Context context, String mailAddress, String mailSubject, String mailText) throws Throwable {
         if (context == null) {
             return;
-        }
-        if (!isIntentAvailable(context, Intent.ACTION_SENDTO)) {
-            throw new IntentFailException(NO_INTENT_ERROR);
         }
         try {
             Intent intent = new Intent(Intent.ACTION_SENDTO);
@@ -323,24 +321,8 @@ public class Intents {
 
             context.startActivity(intent);
         }catch (Throwable e){
-            e.printStackTrace();
+            throw new Throwable(NO_INTENT_ERROR + e.toString());
         }
-    }
-
-    /**
-     * Checks if an intent is available before launching it.
-     *
-     * @param context A context used to call the activity.
-     * @param action  The action that will be checked.
-     */
-    public static boolean isIntentAvailable(Context context, String action) {
-        if (context == null || action == null) {
-            return false;
-        }
-        PackageManager packageManager = context.getPackageManager();
-        Intent intent = new Intent(action);
-        List<ResolveInfo> list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        return list.size() > 0;
     }
 
 }
