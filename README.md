@@ -15,7 +15,7 @@ Android api 4.3+:
 
 Add to dependencies:
 ```
-compile 'com.github.gerp83:VariousUtils:1.03'
+compile 'com.github.gerp83:VariousUtils:1.04'
 ```
 
 ## Examples
