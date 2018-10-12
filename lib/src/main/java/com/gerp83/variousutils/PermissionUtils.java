@@ -58,6 +58,7 @@ public class PermissionUtils {
      * @param resultCode Result code.
      * @param permissions The needed permissions.
      */
+    @SuppressWarnings("ConstantConditions")
     public static void request(Object object, Context context, int resultCode, String... permissions) {
         String [] neededPermissions = getNeededPermissionsList(context, permissions);
         if(neededPermissions == null || neededPermissions.length == 0) {

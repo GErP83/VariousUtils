@@ -41,7 +41,7 @@ public class L {
         } else if(clazz.isArray()) {
 
             Class type = clazz.getComponentType();
-            if(isPrimitive(type)) {
+            if(type != null && isPrimitive(type)) {
 
                 if(type == int.class)
                     System.out.println(Arrays.toString((int[])object));

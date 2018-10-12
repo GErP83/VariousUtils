@@ -186,6 +186,8 @@ public class Prefs {
      */
     public void setString(String key, String value) {
         sharedPreferences.edit().putString(key, value).apply();
+
+
     }
 
     /**
@@ -195,6 +197,39 @@ public class Prefs {
      */
     public void remove(String key) {
         sharedPreferences.edit().remove(key).apply();
+    }
+
+    /**
+     * SharedPreferences has something with key
+     *
+     * @param key key for contains
+     */
+    public boolean contains(String key) {
+        return sharedPreferences.contains(key);
+    }
+
+    /**
+     * register OnSharedPreferenceChangeListener
+     *
+     * @param listener listener to register
+     */
+    public void register(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        if(listener == null) {
+            return;
+        }
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
+    }
+
+    /**
+     * unregister OnSharedPreferenceChangeListener
+     *
+     * @param listener listener to register
+     */
+    public void unregister(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        if(listener == null) {
+            return;
+        }
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(listener);
     }
 
 }

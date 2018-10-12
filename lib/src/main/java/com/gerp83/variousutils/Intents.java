@@ -308,9 +308,8 @@ public class Intents {
         }
         try {
             Intent intent = new Intent(Intent.ACTION_SENDTO);
-            intent.setType("*/*");
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.setData(Uri.parse("mailto:"));
+            intent.setDataAndType(Uri.parse("mailto:"), "*/*");
             intent.putExtra(Intent.EXTRA_EMAIL, new String[]{mailAddress});
             if (mailSubject != null) {
                 intent.putExtra(Intent.EXTRA_SUBJECT, mailSubject);

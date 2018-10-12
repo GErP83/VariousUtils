@@ -45,15 +45,13 @@ public class GeneralUtils {
 
     public static X509TrustManager getX509(){
         return new X509TrustManager() {
-            @SuppressLint ("TrustAllX509TrustManager")
+            @SuppressLint("TrustAllX509TrustManager")
             @Override
-            public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
-            }
+            public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {}
 
             @SuppressLint("TrustAllX509TrustManager")
             @Override
-            public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) throws CertificateException {
-            }
+            public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {}
 
             @Override
             public java.security.cert.X509Certificate[] getAcceptedIssuers() {
