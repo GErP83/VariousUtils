@@ -15,7 +15,7 @@ Android api 4.3+:
 
 Add to dependencies:
 ```
-compile 'com.github.gerp83:VariousUtils:1.04'
+compile 'com.github.gerp83:VariousUtils:1.05'
 ```
 
 ## Examples
@@ -24,4 +24,4 @@ TODO
 ## Lisence
 [wtfpl](http://www.wtfpl.net/)
 
-I hope this can make your job easier, happy adapter creating!
+I hope this can make your job easier, happy using utils!
