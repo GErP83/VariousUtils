@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import java.util.Set;
+
 /**
  * A singleton class to handle SharedPreferences load and save
  */
@@ -186,8 +188,37 @@ public class Prefs {
      */
     public void setString(String key, String value) {
         sharedPreferences.edit().putString(key, value).apply();
+    }
 
+    //string set
 
+    /**
+     * load a Set<String> value from SharedPreferences with a default value
+     *
+     * @param key          key for the Set<String> value
+     * @param defaultValue default Set<String> value
+     */
+    public Set<String> getStringSet(String key, Set<String> defaultValue) {
+        return sharedPreferences.getStringSet(key, defaultValue);
+    }
+
+    /**
+     * load a Set<String> value from SharedPreferences with value null
+     *
+     * @param key key for the Set<String> value
+     */
+    public Set<String> getStringSet(String key) {
+        return sharedPreferences.getStringSet(key, null);
+    }
+
+    /**
+     * save a Set<String> value to SharedPreferences
+     *
+     * @param key   key for the Set<String> value
+     * @param value Set<String> value
+     */
+    public void setStringSet(String key, Set<String> value) {
+        sharedPreferences.edit().putStringSet(key, value).apply();
     }
 
     /**

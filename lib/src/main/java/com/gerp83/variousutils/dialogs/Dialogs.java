@@ -1,4 +1,4 @@
-package com.gerp83.variousutils;
+package com.gerp83.variousutils.dialogs;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -12,32 +12,24 @@ import android.content.DialogInterface.OnCancelListener;
  */
 public class Dialogs {
 
-    /**
-     * callBack for Dialog Buttons
-     */
-    public interface ButtonListener {
-        void onPositive();
-        void onNegative();
-        void onNeutral();
-    }
-
     private String title;
     private String text;
-
+    private int resId;
     private boolean cancelAble;
     private boolean outsideCancelAble;
     private String buttonTextNegative;
     private String buttonTextPositive;
     private String buttonTextNeutral;
-
     private OnCancelListener onCancelListener;
-    private ButtonListener buttonListener;
+
+    private PositiveButtonListener positiveButtonListener;
+    private NegativeButtonListener negativeButtonListener;
+    private NeutralButtonListener neutralButtonListener;
 
     private boolean isListDialog;
     private DialogInterface.OnClickListener listItemClickListener;
     private String[] listContent;
     private int listSelectedItem = -1;
-
     private static ProgressDialog progressdialog;
 
     /**
@@ -50,6 +42,7 @@ public class Dialogs {
     private Dialogs() {
         title = null;
         text = null;
+        resId = -1;
         cancelAble = false;
         outsideCancelAble = false;
         buttonTextNegative = null;
@@ -57,7 +50,9 @@ public class Dialogs {
         buttonTextPositive = "Ok";
         isListDialog = false;
         onCancelListener = null;
-        buttonListener = null;
+        positiveButtonListener = null;
+        positiveButtonListener = null;
+        neutralButtonListener = null;
         listItemClickListener = null;
         listContent = null;
         listSelectedItem = -1;
@@ -80,6 +75,16 @@ public class Dialogs {
      */
     public Dialogs setText(String text) {
         this.text = text;
+        return this;
+    }
+
+    /**
+     * set text
+     *
+     * @param resId drawable resource id
+     */
+    public Dialogs setTitleIcon(int resId) {
+        this.resId = resId;
         return this;
     }
 
@@ -144,14 +149,35 @@ public class Dialogs {
     }
 
     /**
-     * set ButtonListener, for listening positive or negative response
+     * set ButtonListener for listening neutral button
      *
-     * @param buttonListener set ButtonListener for AlertDialog
+     * @param buttonListener NeutralButtonListener
      */
-    public Dialogs setButtonListener(ButtonListener buttonListener) {
-        this.buttonListener = buttonListener;
+    public Dialogs setNeutralButtonListener(NeutralButtonListener buttonListener) {
+        this.neutralButtonListener = buttonListener;
         return this;
     }
+
+    /**
+     * set ButtonListener for listening negative button
+     *
+     * @param buttonListener NegativeButtonListener
+     */
+    public Dialogs setNegativeButtonListener(NegativeButtonListener buttonListener) {
+        this.negativeButtonListener = buttonListener;
+        return this;
+    }
+
+    /**
+     * set ButtonListener for listening positive button
+     *
+     * @param buttonListener PositiveButtonListener
+     */
+    public Dialogs setPositiveButtonListener(PositiveButtonListener buttonListener) {
+        this.positiveButtonListener = buttonListener;
+        return this;
+    }
+
 
     /**
      * set dialog type to list
@@ -208,7 +234,7 @@ public class Dialogs {
             progressdialog.setCancelable(cancelAble);
             progressdialog.setOnCancelListener(onCancelListener);
             progressdialog.show();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
     }
@@ -236,62 +262,68 @@ public class Dialogs {
         if (context == null) {
             return;
         }
-        if (!isListDialog) {
-            AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-            alertDialog.setTitle(title);
-            alertDialog.setMessage(text);
-            alertDialog.setCancelable(cancelAble);
-            alertDialog.setOnCancelListener(onCancelListener);
-            alertDialog.setCanceledOnTouchOutside(outsideCancelAble);
+        try {
 
-            if (buttonTextNegative != null) {
-                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, buttonTextNegative, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (buttonListener != null) {
-                            buttonListener.onNegative();
-                        }
-                    }
-                });
-            }
-            if (buttonTextNeutral != null) {
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, buttonTextNeutral, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (buttonListener != null) {
-                            buttonListener.onNeutral();
-                        }
-                    }
-                });
-            }
-            if (buttonTextPositive == null) {
-                buttonTextPositive = "Ok";
-            }
-            alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, buttonTextPositive, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int which) {
+            if (!isListDialog) {
+                AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+                alertDialog.setTitle(title);
+                alertDialog.setMessage(text);
+                alertDialog.setIcon(resId);
+                alertDialog.setCancelable(cancelAble);
+                alertDialog.setOnCancelListener(onCancelListener);
+                alertDialog.setCanceledOnTouchOutside(outsideCancelAble);
 
-                    if (buttonListener != null) {
-                        buttonListener.onPositive();
-                    }
+                if (buttonTextNegative != null) {
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, buttonTextNegative, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (negativeButtonListener != null) {
+                                negativeButtonListener.onNegative();
+                            }
+                        }
+                    });
                 }
-            });
-            alertDialog.show();
-
-        } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle(title);
-            builder.setCancelable(cancelAble);
-            builder.setOnCancelListener(onCancelListener);
-
-            if(listSelectedItem == -1) {
-                builder.setItems(listContent, listItemClickListener);
+                if (buttonTextNeutral != null) {
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, buttonTextNeutral, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (neutralButtonListener != null) {
+                                neutralButtonListener.onNeutral();
+                            }
+                        }
+                    });
+                }
+                if (buttonTextPositive == null) {
+                    buttonTextPositive = "Ok";
+                }
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, buttonTextPositive, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (positiveButtonListener != null) {
+                            positiveButtonListener.onPositive();
+                        }
+                    }
+                });
+                alertDialog.show();
 
             } else {
-                builder.setSingleChoiceItems(listContent, listSelectedItem, listItemClickListener);
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle(title);
+                builder.setCancelable(cancelAble);
+                builder.setOnCancelListener(onCancelListener);
 
+                if(listSelectedItem == -1) {
+                    builder.setItems(listContent, listItemClickListener);
+
+                } else {
+                    builder.setSingleChoiceItems(listContent, listSelectedItem, listItemClickListener);
+
+                }
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.setCanceledOnTouchOutside(outsideCancelAble);
+                alertDialog.show();
             }
 
-            AlertDialog alertDialog = builder.create();
-            alertDialog.setCanceledOnTouchOutside(outsideCancelAble);
-            alertDialog.show();
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
     }
 

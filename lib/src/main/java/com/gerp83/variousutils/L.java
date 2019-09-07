@@ -68,6 +68,7 @@ public class L {
                 System.out.println(Arrays.toString((Object[])object));
             }
 
+        //try to call the Objects toString() method
         } else {
             Method method = null;
             try {

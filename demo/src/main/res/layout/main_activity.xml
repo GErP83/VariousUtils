@@ -6,4 +6,18 @@
     android:layout_height="match_parent"
     >
 
+    <Button
+        android:id="@+id/activityTest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Activity Test"
+        />
+
+    <Button
+        android:id="@+id/fragmentTest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Fragment Test"
+        />
+
 </LinearLayout>

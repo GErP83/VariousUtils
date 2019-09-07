@@ -6,11 +6,19 @@
     android:layout_height="match_parent"
     >
 
-    <TextView
-        android:id="@+id/textView"
+    <Button
+        android:id="@+id/returnWithResult"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@android:color/black"
+        android:enabled="false"
+        android:text="Return Result"
+        />
+
+    <Button
+        android:id="@+id/clear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Clear"
         />
 
 </LinearLayout>
