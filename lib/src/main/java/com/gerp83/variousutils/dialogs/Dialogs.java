@@ -263,12 +263,13 @@ public class Dialogs {
             return;
         }
         try {
-
             if (!isListDialog) {
                 AlertDialog alertDialog = new AlertDialog.Builder(context).create();
                 alertDialog.setTitle(title);
                 alertDialog.setMessage(text);
-                alertDialog.setIcon(resId);
+                if(resId != -1) {
+                    alertDialog.setIcon(resId);
+                }
                 alertDialog.setCancelable(cancelAble);
                 alertDialog.setOnCancelListener(onCancelListener);
                 alertDialog.setCanceledOnTouchOutside(outsideCancelAble);
@@ -311,12 +312,10 @@ public class Dialogs {
 
                 if(listSelectedItem == -1) {
                     builder.setItems(listContent, listItemClickListener);
-
                 } else {
                     builder.setSingleChoiceItems(listContent, listSelectedItem, listItemClickListener);
 
                 }
-
                 AlertDialog alertDialog = builder.create();
                 alertDialog.setCanceledOnTouchOutside(outsideCancelAble);
                 alertDialog.show();
