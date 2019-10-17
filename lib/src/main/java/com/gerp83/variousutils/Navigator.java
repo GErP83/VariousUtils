@@ -24,6 +24,7 @@ public class Navigator {
     private int intentFlags = -1;
     private String action = null;
     private int requestCode = -1;
+    private int resultCode = Activity.RESULT_OK;
 
     private boolean finish = false;
     private boolean forResult = false;
@@ -155,6 +156,17 @@ public class Navigator {
     }
 
     /**
+     * finish current Activity and the given new result code will be added to the returned Intent, do not use this, with 'from(Context context)'
+     *
+     * @param newResultCode target Activity class
+     */
+    public void returnResult(int newResultCode) {
+        resultCode = newResultCode;
+        returnResult = true;
+        navigate();
+    }
+
+    /**
      * opens target Activity and clear all other opened Activities, Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK will be added to Intent flags
      *
      * @param newTargetClass target Activity class
@@ -219,11 +231,11 @@ public class Navigator {
 
             } else {
                 if(fragmentFrom != null && fragmentFrom.getActivity() != null) {
-                    fragmentFrom.getActivity().setResult(Activity.RESULT_OK, intent);
+                    fragmentFrom.getActivity().setResult(resultCode, intent);
                     fragmentFrom.getActivity().finish();
 
                 } else if(activityFrom != null){
-                    activityFrom.setResult(Activity.RESULT_OK, intent);
+                    activityFrom.setResult(resultCode, intent);
                     activityFrom.finish();
                 }
             }
